@@ -19,7 +19,7 @@ jobs:
         distribution: 'temurin'
         
     - name: Make gradlew executable
-      run: chmod +x ./gradlew
+      run: chmod +x gradlew
       
     - name: Build APK
       working-directory: ./App
