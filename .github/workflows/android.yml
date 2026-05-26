@@ -20,7 +20,10 @@ jobs:
         
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
-      
+     - name: Make gradlew executable
+  run: chmod +x gradlew
+  working-directory: ./app
+
     - name: Build APK
       working-directory: ./app
       run: ./gradlew assembleDebug --no-daemon
