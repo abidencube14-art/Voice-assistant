@@ -16,7 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(int error) {
 
-                textView.setText("Error listening");
+                textView.setText("I didn't catch that.");
             }
 
             @Override
@@ -137,10 +139,75 @@ public class MainActivity extends AppCompatActivity {
 
                     textView.setText(text);
 
+                    String lowerText = text.toLowerCase();
+
+                    String reply;
+
+                    // Greetings
+                    if (lowerText.contains("hello")
+                            || lowerText.contains("hi")) {
+
+                        reply = "Hey, what's up?";
+
+                    }
+
+                    // Name
+                    else if (lowerText.contains("your name")) {
+
+                        reply = "I'm your offline voice assistant.";
+
+                    }
+
+                    // How are you
+                    else if (lowerText.contains("how are you")) {
+
+                        reply = "I'm functioning perfectly.";
+
+                    }
+
+                    // Time
+                    else if (lowerText.contains("time")) {
+
+                        SimpleDateFormat sdf =
+                                new SimpleDateFormat(
+                                        "hh:mm a",
+                                        Locale.getDefault()
+                                );
+
+                        String currentTime = sdf.format(new Date());
+
+                        reply = "The time is " + currentTime;
+
+                    }
+
+                    // Joke
+                    else if (lowerText.contains("joke")) {
+
+                        reply = "Why did the programmer go broke? Because he used up all his cache.";
+
+                    }
+
+                    // Creator
+                    else if (lowerText.contains("who made you")) {
+
+                        reply = "I was created by an ambitious developer on a Samsung phone.";
+
+                    }
+
+                    // Default reply
+                    else {
+
+                        reply = "I heard you say " + text;
+                    }
+
+                    // Show reply on screen
+                    textView.setText(reply);
+
+                    // Speak reply
                     if (ttsReady) {
 
                         tts.speak(
-                                "You said " + text,
+                                reply,
                                 TextToSpeech.QUEUE_FLUSH,
                                 null,
                                 null
@@ -199,4 +266,4 @@ public class MainActivity extends AppCompatActivity {
             speechRecognizer.destroy();
         }
     }
-            }
+}
