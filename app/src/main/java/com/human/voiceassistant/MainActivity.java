@@ -150,8 +150,8 @@ public class MainActivity extends AppCompatActivity {
                     String reply;
 
                     // Wake phrase
-                    if (lowerText.contains("hey dual")
-        || lowerText.contains("hey dualister")) {
+                    if (lowerText.contains("hey " + wakeName.toLowerCase())
+        || lowerText.contains("hey " + assistantName.toLowerCase())) {
 
                         if (personalityMode.equals("casual")) {
 
