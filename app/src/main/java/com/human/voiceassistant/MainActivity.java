@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Memory
     private String userName = "Abide";
-    private String assistantName = "Dualister";
-    private String wakeName = "Dual";
+    private String assistantName = "Baymax";
+    private String wakeName = "Max";
     
     // Personality mode
     private String personalityMode = "casual";
