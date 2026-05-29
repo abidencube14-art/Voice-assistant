@@ -32,9 +32,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean ttsReady = false;
 
     // Memory
-    private String userName = "friend";
-    private String assistantName = "Nova";
-
+    private String userName = "Abide";
+    private String assistantName = "Dualister";
+    private String wakeName = "Dual";
+    
     // Personality mode
     private String personalityMode = "casual";
 
@@ -149,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
                     String reply;
 
                     // Wake phrase
-                    if (lowerText.contains("hey " + assistantName.toLowerCase())) {
+                    if (lowerText.contains("hey dual")
+        || lowerText.contains("hey dualister")) {
 
                         if (personalityMode.equals("casual")) {
 
