@@ -1,26 +1,57 @@
 package com.human.voiceassistant;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextToSpeech tts;
+    private SpeechRecognizer speechRecognizer;
+
+    private TextView textView;
+    private Button listenButton;
+
     private boolean ttsReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button listenButton = findViewById(R.id.listenButton);
+        textView = findViewById(R.id.textView);
+        listenButton = findViewById(R.id.listenButton);
 
+        // Request microphone permission
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.RECORD_AUDIO},
+                    1
+            );
+        }
+
+        // Initialize Text To Speech
         tts = new TextToSpeech(this, status -> {
 
             if (status == TextToSpeech.SUCCESS) {
@@ -30,55 +61,142 @@ public class MainActivity extends AppCompatActivity {
                 if (result == TextToSpeech.LANG_MISSING_DATA
                         || result == TextToSpeech.LANG_NOT_SUPPORTED) {
 
-                    Toast.makeText(this,
+                    Toast.makeText(
+                            this,
                             "Language not supported",
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_LONG
+                    ).show();
 
                 } else {
 
                     ttsReady = true;
 
-                    Toast.makeText(this,
+                    Toast.makeText(
+                            this,
                             "Voice Assistant Ready",
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
 
             } else {
 
-                Toast.makeText(this,
+                Toast.makeText(
+                        this,
                         "TTS Initialization Failed",
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_LONG
+                ).show();
             }
         });
 
+        // Initialize Speech Recognizer
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+
+            @Override
+            public void onReadyForSpeech(Bundle params) {
+
+                textView.setText("Listening...");
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+            }
+
+            @Override
+            public void onRmsChanged(float rmsdB) {
+            }
+
+            @Override
+            public void onBufferReceived(byte[] buffer) {
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+                textView.setText("Processing...");
+            }
+
+            @Override
+            public void onError(int error) {
+
+                textView.setText("Error listening");
+            }
+
+            @Override
+            public void onResults(Bundle results) {
+
+                ArrayList<String> data =
+                        results.getStringArrayList(
+                                SpeechRecognizer.RESULTS_RECOGNITION
+                        );
+
+                if (data != null && data.size() > 0) {
+
+                    String text = data.get(0);
+
+                    textView.setText(text);
+
+                    if (ttsReady) {
+
+                        tts.speak(
+                                "You said " + text,
+                                TextToSpeech.QUEUE_FLUSH,
+                                null,
+                                null
+                        );
+                    }
+                }
+            }
+
+            @Override
+            public void onPartialResults(Bundle partialResults) {
+            }
+
+            @Override
+            public void onEvent(int eventType, Bundle params) {
+            }
+        });
+
+        // Button click
         listenButton.setOnClickListener(v -> {
 
-            if (ttsReady) {
+            Intent intent =
+                    new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-                tts.speak(
-                        "Hello. I am online and ready.",
-                        TextToSpeech.QUEUE_FLUSH,
-                        null,
-                        null
-                );
+            intent.putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            );
 
-            } else {
+            intent.putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE,
+                    Locale.getDefault()
+            );
 
-                Toast.makeText(this,
-                        "TTS not ready yet",
-                        Toast.LENGTH_SHORT).show();
-            }
+            intent.putExtra(
+                    RecognizerIntent.EXTRA_PROMPT,
+                    "Speak now..."
+            );
+
+            speechRecognizer.startListening(intent);
         });
     }
 
     @Override
     protected void onDestroy() {
 
+        super.onDestroy();
+
         if (tts != null) {
+
             tts.stop();
             tts.shutdown();
         }
 
-        super.onDestroy();
+        if (speechRecognizer != null) {
+
+            speechRecognizer.destroy();
+        }
     }
-}
+            }
