@@ -238,7 +238,21 @@ public class MainActivity extends AppCompatActivity {
                             reply = "The current time is " + currentTime;
                         }
                     }
+                        
+                    // Assistant name
+                    else if (lowerText.contains("what's your name")
+        || lowerText.contains("what is your name")) {
 
+                        if (personalityMode.equals("casual")) {
+
+                            reply = "I'm " + assistantName;
+
+                        } else {
+
+                            reply = "My name is " + assistantName;
+                        }
+                    }
+                        
                     // Greetings
                     else if (lowerText.contains("hello")
                             || lowerText.contains("hi")) {
