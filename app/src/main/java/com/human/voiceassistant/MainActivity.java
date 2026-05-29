@@ -31,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean ttsReady = false;
 
+    // Memory
+    private String userName = "friend";
+    private String assistantName = "Nova";
+
+    // Personality mode
+    private String personalityMode = "casual";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -40,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.textView);
         listenButton = findViewById(R.id.listenButton);
 
-        // Request microphone permission
+        // Microphone permission
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.RECORD_AUDIO)
@@ -53,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             );
         }
 
-        // Initialize Text To Speech
+        // Text To Speech
         tts = new TextToSpeech(this, status -> {
 
             if (status == TextToSpeech.SUCCESS) {
@@ -75,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Toast.makeText(
                             this,
-                            "Voice Assistant Ready",
+                            assistantName + " is ready",
                             Toast.LENGTH_SHORT
                     ).show();
                 }
@@ -90,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize Speech Recognizer
+        // Speech Recognizer
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
@@ -137,32 +144,76 @@ public class MainActivity extends AppCompatActivity {
 
                     String text = data.get(0);
 
-                    textView.setText(text);
-
                     String lowerText = text.toLowerCase();
 
                     String reply;
 
-                    // Greetings
-                    if (lowerText.contains("hello")
-                            || lowerText.contains("hi")) {
+                    // Wake phrase
+                    if (lowerText.contains("hey " + assistantName.toLowerCase())) {
 
-                        reply = "Hey, what's up?";
+                        if (personalityMode.equals("casual")) {
+
+                            reply = "Yeah " + userName + "?";
+
+                        } else {
+
+                            reply = "Hello " + userName + ". How may I assist you?";
+                        }
+                    }
+
+                    // User name memory
+                    else if (lowerText.contains("call me")) {
+
+                        String[] parts = text.split("call me");
+
+                        if (parts.length > 1) {
+
+                            userName = parts[1].trim();
+
+                            reply = "Alright. I'll call you " + userName;
+                        } else {
+
+                            reply = "What should I call you?";
+                        }
+                    }
+
+                    // Assistant naming
+                    else if (lowerText.contains("your name is")) {
+
+                        String[] parts = text.split("your name is");
+
+                        if (parts.length > 1) {
+
+                            assistantName = parts[1].trim();
+
+                            reply = "Okay. My new name is " + assistantName;
+                        } else {
+
+                            reply = "What should my name be?";
+                        }
+                    }
+
+                    // Recall user name
+                    else if (lowerText.contains("what's my name")
+                            || lowerText.contains("what is my name")) {
+
+                        reply = "Your name is " + userName;
+                    }
+
+                    // Personality modes
+                    else if (lowerText.contains("switch to casual mode")) {
+
+                        personalityMode = "casual";
+
+                        reply = "Casual mode activated.";
 
                     }
 
-                    // Name
-                    else if (lowerText.contains("your name")) {
+                    else if (lowerText.contains("switch to formal mode")) {
 
-                        reply = "I'm your offline voice assistant.";
+                        personalityMode = "formal";
 
-                    }
-
-                    // How are you
-                    else if (lowerText.contains("how are you")) {
-
-                        reply = "I'm functioning perfectly.";
-
+                        reply = "Formal mode activated.";
                     }
 
                     // Time
@@ -176,31 +227,70 @@ public class MainActivity extends AppCompatActivity {
 
                         String currentTime = sdf.format(new Date());
 
-                        reply = "The time is " + currentTime;
+                        if (personalityMode.equals("casual")) {
 
+                            reply = "It's " + currentTime;
+
+                        } else {
+
+                            reply = "The current time is " + currentTime;
+                        }
+                    }
+
+                    // Greetings
+                    else if (lowerText.contains("hello")
+                            || lowerText.contains("hi")) {
+
+                        if (personalityMode.equals("casual")) {
+
+                            reply = "Hey " + userName + ", what's up?";
+
+                        } else {
+
+                            reply = "Hello " + userName +
+                                    ". I hope you are doing well.";
+                        }
+                    }
+
+                    // How are you
+                    else if (lowerText.contains("how are you")) {
+
+                        if (personalityMode.equals("casual")) {
+
+                            reply = "I'm doing great.";
+
+                        } else {
+
+                            reply = "I am functioning perfectly.";
+                        }
                     }
 
                     // Joke
                     else if (lowerText.contains("joke")) {
 
                         reply = "Why did the programmer go broke? Because he used up all his cache.";
-
                     }
 
                     // Creator
                     else if (lowerText.contains("who made you")) {
 
                         reply = "I was created by an ambitious developer on a Samsung phone.";
-
                     }
 
-                    // Default reply
+                    // Default
                     else {
 
-                        reply = "I heard you say " + text;
+                        if (personalityMode.equals("casual")) {
+
+                            reply = "I heard you say " + text;
+
+                        } else {
+
+                            reply = "You said " + text;
+                        }
                     }
 
-                    // Show reply on screen
+                    // Show reply
                     textView.setText(reply);
 
                     // Speak reply
@@ -225,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Button click
+        // Button
         listenButton.setOnClickListener(v -> {
 
             Intent intent =
