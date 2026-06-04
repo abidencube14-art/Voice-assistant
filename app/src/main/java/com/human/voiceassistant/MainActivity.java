@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
 userName = prefs.getString("userName", "friend");
 assistantName = prefs.getString("assistantName", "Baymax");
-personalityMode = prefs.getString("personalityMode", "casual");u
+personalityMode = prefs.getString("personalityMode", "casual");
 
         textView = findViewById(R.id.textView);
         listenButton = findViewById(R.id.listenButton);
