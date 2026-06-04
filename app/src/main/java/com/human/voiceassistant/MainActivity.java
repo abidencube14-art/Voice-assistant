@@ -3,6 +3,7 @@ package com.human.voiceassistant;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -39,11 +40,19 @@ public class MainActivity extends AppCompatActivity {
     // Personality mode
     private String personalityMode = "casual";
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs = getSharedPreferences("BaymaxMemory", MODE_PRIVATE);
+
+userName = prefs.getString("userName", "friend");
+assistantName = prefs.getString("assistantName", "Baymax");
+personalityMode = prefs.getString("personalityMode", "casual");u
 
         textView = findViewById(R.id.textView);
         listenButton = findViewById(R.id.listenButton);
@@ -172,7 +181,11 @@ public class MainActivity extends AppCompatActivity {
 
                             userName = parts[1].trim();
 
-                            reply = "Alright. I'll call you " + userName;
+prefs.edit()
+        .putString("userName", userName)
+        .apply();
+
+reply = "Alright. I'll call you " + userName;
                         } else {
 
                             reply = "What should I call you?";
@@ -188,6 +201,10 @@ public class MainActivity extends AppCompatActivity {
 
                             assistantName = parts[1].trim();
 
+prefs.edit()
+        .putString("assistantName", assistantName)
+        .apply();
+                            
                             reply = "Okay. My new name is " + assistantName;
                         } else {
 
@@ -207,6 +224,10 @@ public class MainActivity extends AppCompatActivity {
 
                         personalityMode = "casual";
 
+prefs.edit()
+        .putString("personalityMode", personalityMode)
+        .apply();
+                        
                         reply = "Casual mode activated.";
 
                     }
@@ -215,6 +236,10 @@ public class MainActivity extends AppCompatActivity {
 
                         personalityMode = "formal";
 
+prefs.edit()
+        .putString("personalityMode", personalityMode)
+        .apply();
+                        
                         reply = "Formal mode activated.";
                     }
 
