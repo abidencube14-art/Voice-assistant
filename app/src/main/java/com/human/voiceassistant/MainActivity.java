@@ -21,6 +21,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.HashMap;
+import org.json.JSONObject;
+import org.json.JSONException;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private String userName = "Abide";
     private String assistantName = "Baymax";
     private String wakeName = "Max";
+    private HashMap<String, String> memory = new HashMap<>();
     
     // Personality mode
     private String personalityMode = "casual";
@@ -49,6 +54,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         prefs = getSharedPreferences("BaymaxMemory", MODE_PRIVATE);
+        String memoryJson = prefs.getString("memory", "{}");
+
+try {
+    JSONObject obj = new JSONObject(memoryJson);
+
+    Iterator<String> keys = obj.keys();
+
+    while (keys.hasNext()) {
+        String key = keys.next();
+        memory.put(key, obj.getString(key));
+    }
+
+} catch (JSONException e) {
+    e.printStackTrace();
+}
 
 userName = prefs.getString("userName", "friend");
 assistantName = prefs.getString("assistantName", "Baymax");
@@ -319,17 +339,52 @@ prefs.edit()
                     }
 
                     // Default
-                    else {
+                        else if (lowerText.startsWith("what is")) {
 
-                        if (personalityMode.equals("casual")) {
+    String key = text.substring(7).trim().toLowerCase();
 
-                            reply = "I heard you say " + text;
+    if (memory.containsKey(key)) {
 
-                        } else {
+        reply = key + " is " + memory.get(key);
 
-                            reply = "You said " + text;
+    } else {
+
+        reply = "I don't remember anything about " + key;
+    }
                         }
-                    }
+                        
+                    else if (lowerText.startsWith("remember that")) {
+
+    String fact = text.substring(13).trim();
+
+    if (fact.contains(" is ")) {
+
+        String[] parts = fact.split(" is ", 2);
+
+        String key = parts[0].trim().toLowerCase();
+        String value = parts[1].trim();
+
+        memory.put(key, value);
+
+        reply = "Okay. I'll remember that " + key + " is " + value;
+
+    } else {
+
+        reply = "Please say it like remember that my favorite color is blue";
+    }
+}
+
+else {
+
+    if (personalityMode.equals("casual")) {
+
+        reply = "I heard you say " + text;
+
+    } else {
+
+        reply = "You said " + text;
+    }
+                                }
 
                     // Show reply
                     textView.setText(reply);
