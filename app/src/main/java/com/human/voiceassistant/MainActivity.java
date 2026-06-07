@@ -366,6 +366,17 @@ prefs.edit()
 
         memory.put(key, value);
 
+        try {
+    JSONObject obj = new JSONObject(memory);
+
+    prefs.edit()
+            .putString("memory", obj.toString())
+            .apply();
+
+} catch (Exception e) {
+    e.printStackTrace();
+        }
+
         reply = "Okay. I'll remember that " + key + " is " + value;
 
     } else {
