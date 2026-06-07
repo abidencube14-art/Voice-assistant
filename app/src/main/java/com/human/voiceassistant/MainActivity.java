@@ -436,8 +436,12 @@ else if (lowerText.startsWith("my ") && lowerText.contains(" is ")) {
         }
 
         reply = "Got it. I'll remember that " + key + " is " + value;
+
+    } else {
+
+        reply = "I couldn't understand that memory.";
     }
-            }
+}
     
 else {
 
