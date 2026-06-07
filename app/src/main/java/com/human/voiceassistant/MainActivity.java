@@ -339,6 +339,30 @@ prefs.edit()
                     }
 
                     // Default
+                    else if (lowerText.contains("what do you know about me")) {
+
+    if (memory.isEmpty()) {
+
+        reply = "I don't know much about you yet.";
+
+    } else {
+
+        StringBuilder info = new StringBuilder();
+
+        info.append("Here's what I know about you. ");
+
+        for (String key : memory.keySet()) {
+
+            info.append(key)
+                .append(" is ")
+                .append(memory.get(key))
+                .append(". ");
+        }
+
+        reply = info.toString();
+    }
+                        }
+                        
                         else if (lowerText.startsWith("what is")) {
 
     String key = text.substring(7).trim().toLowerCase();
