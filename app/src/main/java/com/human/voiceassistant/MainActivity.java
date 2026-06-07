@@ -371,6 +371,10 @@ prefs.edit()
 
         reply = key + " is " + memory.get(key);
 
+    } else if (memory.containsKey("my " + key)) {
+
+        reply = "Your " + key + " is " + memory.get("my " + key);
+
     } else {
 
         reply = "I don't remember anything about " + key;
@@ -408,7 +412,33 @@ prefs.edit()
         reply = "Please say it like remember that my favorite color is blue";
     }
 }
+                        
+else if (lowerText.startsWith("my ") && lowerText.contains(" is ")) {
 
+    String[] parts = text.split(" is ", 2);
+
+    if (parts.length > 1) {
+
+        String key = parts[0].trim().toLowerCase();
+        String value = parts[1].trim();
+
+        memory.put(key, value);
+
+        try {
+            JSONObject obj = new JSONObject(memory);
+
+            prefs.edit()
+                    .putString("memory", obj.toString())
+                    .apply();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        reply = "Got it. I'll remember that " + key + " is " + value;
+    }
+            }
+    
 else {
 
     if (personalityMode.equals("casual")) {
