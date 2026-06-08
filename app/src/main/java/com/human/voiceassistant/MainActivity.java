@@ -4,6 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -263,6 +266,31 @@ prefs.edit()
                         reply = "Formal mode activated.";
                     }
 
+                    // Battery
+                        else if (lowerText.contains("battery")
+        || lowerText.contains("battery percentage")
+        || lowerText.contains("how much battery")) {
+
+    IntentFilter ifilter =
+            new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+
+    Intent batteryStatus =
+            registerReceiver(null, ifilter);
+
+    int level =
+            batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+
+    int scale =
+            batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+    int batteryPct =
+            (int) ((level / (float) scale) * 100);
+
+    reply = "Your battery is at "
+            + batteryPct
+            + " percent.";
+                        }
+                        
                     // Time
                     else if (lowerText.contains("time")) {
 
@@ -283,6 +311,24 @@ prefs.edit()
                             reply = "The current time is " + currentTime;
                         }
                     }
+
+                        else if (lowerText.contains("what is today's date")
+      || lowerText.contains("what is the date")
+      || lowerText.contains("today's date")) {
+
+    SimpleDateFormat dateFormat =
+            new SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault());
+
+    reply = "Today is " + dateFormat.format(new Date());
+                        }
+
+                            else if (lowerText.contains("what day is it")) {
+
+    SimpleDateFormat dayFormat =
+            new SimpleDateFormat("EEEE", Locale.getDefault());
+
+    reply = "Today is " + dayFormat.format(new Date());
+                            }
                         
                     // Assistant name
                     else if (lowerText.contains("what's your name")
