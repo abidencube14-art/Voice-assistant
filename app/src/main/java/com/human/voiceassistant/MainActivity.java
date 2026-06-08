@@ -767,11 +767,11 @@ else if (lowerText.startsWith("save contact ")) {
         reply = "Say: save contact number as name";
     }
     
-                                                else if (lowerText.startsWith("call ")) {
+                                                if (lowerText.startsWith("call ")) {
 
     String person = text.substring(5).trim().toLowerCase();
 
-    if (contacts.containsKey(person)) {
+   else if (contacts.containsKey(person)) {
 
         String number = contacts.get(person);
 
