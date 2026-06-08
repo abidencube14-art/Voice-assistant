@@ -729,24 +729,19 @@ prefs.edit()
                                     }
                                         else if (lowerText.matches("what is \\d+ plus \\d+")) {
 
-    String expression =
-            lowerText.replace("what is ", "");
-
+    String expression = lowerText.replace("what is ", "");
     String[] parts = expression.split(" plus ");
 
-    int a = Integer.parseInt(parts[0]);
-    int b = Integer.parseInt(parts[1]);
+    int a = Integer.parseInt(parts[0].trim());
+    int b = Integer.parseInt(parts[1].trim());
 
     reply = "The answer is " + (a + b);
-                }
-                                            else if (lowerText.startsWith("save contact ")) {
+}
+
+else if (lowerText.startsWith("save contact ")) {
 
     String contactData = text.substring(13).trim();
-
     String[] parts = contactData.split(" as ");
-
-    ...
-        }
 
     if (parts.length == 2) {
 
@@ -754,26 +749,24 @@ prefs.edit()
         String name = parts[1].trim().toLowerCase();
 
         contacts.put(name, number);
+
         try {
+            JSONObject contactsObj = new JSONObject(contacts);
 
-    JSONObject contactsObj = new JSONObject(contacts);
+            prefs.edit()
+                    .putString("contacts", contactsObj.toString())
+                    .apply();
 
-    prefs.edit()
-            .putString("contacts", contactsObj.toString())
-            .apply();
-
-} catch (Exception e) {
-
-    e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         reply = "Saved " + name + " with number " + number;
 
     } else {
-
-        reply = "Say save contact number as name";
+        reply = "Say: save contact number as name";
     }
-                                            }
+    
                                                 else if (lowerText.startsWith("call ")) {
 
     String person = text.substring(5).trim().toLowerCase();
