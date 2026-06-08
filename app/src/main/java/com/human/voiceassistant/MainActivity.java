@@ -741,9 +741,12 @@ prefs.edit()
                 }
                                             else if (lowerText.startsWith("save contact ")) {
 
-    String data = text.substring(13).trim();
+    String contactData = text.substring(13).trim();
 
-    String[] parts = data.split(" as ");
+    String[] parts = contactData.split(" as ");
+
+    ...
+        }
 
     if (parts.length == 2) {
 
