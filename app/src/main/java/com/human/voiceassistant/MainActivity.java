@@ -763,11 +763,13 @@ else if (lowerText.startsWith("save contact ")) {
 
         reply = "Saved " + name + " with number " + number;
 
-    } else {
-        reply = "Say: save contact number as name";
-    }
-    
-                                                else if (lowerText.startsWith("call ")) {
+} else {
+    reply = "Say: save contact number as name";
+}
+
+}   // <-- ADD THIS MISSING BRACE
+
+else if (lowerText.startsWith("call ")) {
 
     String person = text.substring(5).trim().toLowerCase();
 
@@ -786,7 +788,7 @@ else if (lowerText.startsWith("save contact ")) {
 
         reply = "I don't know that contact.";
     }
-                            }
+        }
     
                     // Joke
                     else if (lowerText.contains("joke")) {
