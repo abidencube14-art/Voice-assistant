@@ -212,7 +212,7 @@ personalityMode = prefs.getString("personalityMode", "casual");
 
                     String lowerText = text.toLowerCase();
 
-                    String reply;
+                    String reply = "";
 
                     // Wake phrase
                     if (lowerText.contains("hey " + wakeName.toLowerCase())
