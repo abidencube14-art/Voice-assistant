@@ -327,18 +327,31 @@ prefs.edit()
                     // App opening
                             else if (lowerText.contains("open calculator")) {
 
-    Intent launchIntent =
-            getPackageManager()
-                    .getLaunchIntentForPackage(
-                            "com.sec.android.app.popupcalculator");
+    String[] packages = {
+            "com.sec.android.app.popupcalculator",
+            "com.google.android.calculator",
+            "com.android.calculator2"
+    };
 
-    if (launchIntent != null) {
+    boolean opened = false;
 
-        startActivity(launchIntent);
+    for (String pkg : packages) {
 
-        reply = "Opening calculator.";
+        Intent launchIntent =
+                getPackageManager()
+                        .getLaunchIntentForPackage(pkg);
 
-    } else {
+        if (launchIntent != null) {
+
+            startActivity(launchIntent);
+
+            reply = "Opening calculator.";
+            opened = true;
+            break;
+        }
+    }
+
+    if (!opened) {
 
         reply = "I couldn't find the calculator app.";
     }
@@ -407,37 +420,34 @@ prefs.edit()
                                                         else if (lowerText.contains("open whatsapp")) {
 
     Intent launchIntent =
-            getPackageManager().getLaunchIntentForPackage(
-                    "com.whatsapp");
+            getPackageManager().getLaunchIntentForPackage("com.whatsapp");
 
     if (launchIntent != null) {
 
         startActivity(launchIntent);
-
         reply = "Opening WhatsApp.";
 
     } else {
 
-        reply = "WhatsApp is not installed.";
+        Intent intent = new Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://wa.me"));
+
+        startActivity(intent);
+
+        reply = "Opening WhatsApp.";
     }
-                                                        }
+                             }
                                                             else if (lowerText.contains("open youtube")) {
 
-    Intent launchIntent =
-            getPackageManager().getLaunchIntentForPackage(
-                    "com.google.android.youtube");
+    Intent intent = new Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://www.youtube.com"));
 
-    if (launchIntent != null) {
+    startActivity(intent);
 
-        startActivity(launchIntent);
-
-        reply = "Opening YouTube.";
-
-    } else {
-
-        reply = "YouTube is not installed.";
-    }
-                                                            }
+    reply = "Opening YouTube.";
+                }
                                                                 else if (lowerText.contains("open gallery")) {
 
     Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -448,6 +458,7 @@ prefs.edit()
 
     reply = "Opening gallery.";
                                                                 }
+                                                                    
                                                                     else if (lowerText.contains("open files")
         || lowerText.contains("open file manager")) {
 
