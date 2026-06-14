@@ -327,33 +327,19 @@ prefs.edit()
                     // App opening
                             else if (lowerText.contains("open calculator")) {
 
-    String[] packages = {
-            "com.sec.android.app.popupcalculator",
-            "com.google.android.calculator",
-            "com.android.calculator2"
-    };
+    Intent intent =
+            new Intent(Intent.ACTION_MAIN);
 
-    boolean opened = false;
+    intent.addCategory(Intent.CATEGORY_APP_CALCULATOR);
 
-    for (String pkg : packages) {
+    try {
 
-        Intent launchIntent =
-                getPackageManager()
-                        .getLaunchIntentForPackage(pkg);
+        startActivity(intent);
+        reply = "Opening Calculator";
 
-        if (launchIntent != null) {
+    } catch (Exception e) {
 
-            startActivity(launchIntent);
-
-            reply = "Opening calculator.";
-            opened = true;
-            break;
-        }
-    }
-
-    if (!opened) {
-
-        reply = "I couldn't find the calculator app.";
+        reply = "I couldn't find the calculator app";
     }
                             }
                                 else if (lowerText.contains("open camera")) {
@@ -419,19 +405,24 @@ prefs.edit()
                                                     }
                                                         else if (lowerText.contains("open whatsapp")) {
 
-    Intent launchIntent =
-            getPackageManager().getLaunchIntentForPackage("com.whatsapp");
+    Intent intent = getPackageManager()
+            .getLaunchIntentForPackage("com.whatsapp");
 
-    if (launchIntent != null) {
+    if (intent == null) {
+        intent = getPackageManager()
+                .getLaunchIntentForPackage("com.whatsapp.w4b");
+    }
 
-        reply = "WhatsApp found";
-        startActivity(launchIntent);
+    if (intent != null) {
+
+        startActivity(intent);
+        reply = "Opening WhatsApp";
 
     } else {
 
         reply = "WhatsApp not found";
     }
-                       }
+                }
                                                             else if (lowerText.contains("open youtube")) {
 
     Intent intent = new Intent(
