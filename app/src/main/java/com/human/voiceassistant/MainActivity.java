@@ -419,9 +419,19 @@ prefs.edit()
                                                     }
                                                         else if (lowerText.contains("open whatsapp")) {
 
-    reply = "I heard the WhatsApp command";
+    Intent launchIntent =
+            getPackageManager().getLaunchIntentForPackage("com.whatsapp");
 
-        }
+    if (launchIntent != null) {
+
+        reply = "WhatsApp found";
+        startActivity(launchIntent);
+
+    } else {
+
+        reply = "WhatsApp not found";
+    }
+                       }
                                                             else if (lowerText.contains("open youtube")) {
 
     Intent intent = new Intent(
