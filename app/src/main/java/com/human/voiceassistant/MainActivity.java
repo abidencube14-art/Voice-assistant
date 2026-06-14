@@ -723,17 +723,7 @@ prefs.edit()
 
     reply = "Opening " + site;
                                     }
-                                        else if (lowerText.matches("what is \\d+ plus \\d+")) {
-
-    String expression = lowerText.replace("what is ", "");
-    String[] parts = expression.split(" plus ");
-
-    int a = Integer.parseInt(parts[0].trim());
-    int b = Integer.parseInt(parts[1].trim());
-
-    reply = "The answer is " + (a + b);
-}
-
+                                        
 else if (lowerText.startsWith("save contact ")) {
 
     String contactData = text.substring(13).trim();
@@ -822,6 +812,16 @@ else if (lowerText.startsWith("call ")) {
         reply = info.toString();
     }
 }
+                        else if (lowerText.matches("what is \\d+ plus \\d+")) {
+
+    String expression = lowerText.replace("what is ", "");
+    String[] parts = expression.split(" plus ");
+
+    int a = Integer.parseInt(parts[0].trim());
+    int b = Integer.parseInt(parts[1].trim());
+
+    reply = "The answer is " + (a + b);
+        }
 
 else if (lowerText.startsWith("what is")) {
 
