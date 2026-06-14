@@ -422,7 +422,6 @@ prefs.edit()
     reply = "I heard the WhatsApp command";
 
         }
-                             }
                                                             else if (lowerText.contains("open youtube")) {
 
     Intent intent = new Intent(
@@ -821,7 +820,6 @@ else if (lowerText.startsWith("call ")) {
 
         reply = info.toString();
     }
-                        }
                         
                         else if (lowerText.startsWith("what is")) {
 
