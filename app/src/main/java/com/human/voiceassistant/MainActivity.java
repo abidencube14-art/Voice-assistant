@@ -820,8 +820,9 @@ else if (lowerText.startsWith("call ")) {
 
         reply = info.toString();
     }
-                        
-                        else if (lowerText.startsWith("what is")) {
+}
+
+else if (lowerText.startsWith("what is")) {
 
     String key = text.substring(7).trim().toLowerCase();
 
