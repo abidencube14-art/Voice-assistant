@@ -812,10 +812,33 @@ else if (lowerText.startsWith("call ")) {
         reply = info.toString();
     }
 }
-                        else if (lowerText.contains("5")) {
+                        else if (lowerText.contains("+") || lowerText.contains("plus")) {
 
-    reply = "CALCULATOR BLOCK REACHED";
+    try {
+
+        String expression = lowerText
+                .replace("what is", "")
+                .trim();
+
+        String[] parts;
+
+        if (expression.contains("+")) {
+            parts = expression.split("\\+");
+        } else {
+            parts = expression.split("plus");
         }
+
+        int a = Integer.parseInt(parts[0].trim());
+        int b = Integer.parseInt(parts[1].trim());
+
+        reply = "The answer is " + (a + b);
+
+    } catch (Exception e) {
+
+        reply = "Sorry, I couldn't calculate that.";
+    }
+                        }
+                                                                            }
 
 else if (lowerText.startsWith("what is")) {
 
