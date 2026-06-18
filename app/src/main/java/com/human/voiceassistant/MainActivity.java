@@ -838,7 +838,6 @@ else if (lowerText.startsWith("call ")) {
         reply = "Sorry, I couldn't calculate that.";
     }
                         }
-                                                                            }
 
 else if (lowerText.startsWith("what is")) {
 
