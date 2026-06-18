@@ -812,24 +812,10 @@ else if (lowerText.startsWith("call ")) {
         reply = info.toString();
     }
 }
-                        else if (lowerText.contains("plus")) {
+                        else if (lowerText.contains("5")) {
 
-    try {
-
-        String expression = lowerText.replace("what is", "").trim();
-
-        String[] parts = expression.split("plus");
-
-        int a = Integer.parseInt(parts[0].trim());
-        int b = Integer.parseInt(parts[1].trim());
-
-        reply = "The answer is " + (a + b);
-
-    } catch (Exception e) {
-
-        reply = "Sorry, I couldn't calculate that.";
-    }
-                                      }
+    reply = "CALCULATOR BLOCK REACHED";
+        }
 
 else if (lowerText.startsWith("what is")) {
 
