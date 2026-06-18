@@ -405,24 +405,27 @@ prefs.edit()
                                                     }
                                                         else if (lowerText.contains("open whatsapp")) {
 
-    Intent intent = getPackageManager()
-            .getLaunchIntentForPackage("com.whatsapp");
+    try {
 
-    if (intent == null) {
-        intent = getPackageManager()
-                .getLaunchIntentForPackage("com.whatsapp.w4b");
+        Intent intent =
+                getPackageManager()
+                        .getLaunchIntentForPackage("com.whatsapp");
+
+        if (intent != null) {
+
+            startActivity(intent);
+            reply = "Opening WhatsApp";
+
+        } else {
+
+            reply = "Package com.whatsapp not found";
+        }
+
+    } catch (Exception e) {
+
+        reply = "Couldn't open WhatsApp";
     }
-
-    if (intent != null) {
-
-        startActivity(intent);
-        reply = "Opening WhatsApp";
-
-    } else {
-
-        reply = "WhatsApp not found";
-    }
-                }
+                                                        }
                                                             else if (lowerText.contains("open youtube")) {
 
     Intent intent = new Intent(
