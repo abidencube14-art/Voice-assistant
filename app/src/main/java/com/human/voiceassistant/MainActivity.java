@@ -812,16 +812,24 @@ else if (lowerText.startsWith("call ")) {
         reply = info.toString();
     }
 }
-                        else if (lowerText.matches("what is \\d+ plus \\d+")) {
+                        else if (lowerText.contains("plus")) {
 
-    String expression = lowerText.replace("what is ", "");
-    String[] parts = expression.split(" plus ");
+    try {
 
-    int a = Integer.parseInt(parts[0].trim());
-    int b = Integer.parseInt(parts[1].trim());
+        String expression = lowerText.replace("what is", "").trim();
 
-    reply = "The answer is " + (a + b);
-        }
+        String[] parts = expression.split("plus");
+
+        int a = Integer.parseInt(parts[0].trim());
+        int b = Integer.parseInt(parts[1].trim());
+
+        reply = "The answer is " + (a + b);
+
+    } catch (Exception e) {
+
+        reply = "Sorry, I couldn't calculate that.";
+    }
+                                      }
 
 else if (lowerText.startsWith("what is")) {
 
