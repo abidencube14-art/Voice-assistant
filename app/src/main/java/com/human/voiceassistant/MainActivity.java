@@ -329,36 +329,18 @@ prefs.edit()
                     // App opening
                             else if (lowerText.contains("open calculator")) {
 
-    String[] packages = {
-            "com.sec.android.app.popupcalculator",
-            "com.google.android.calculator",
-            "com.android.calculator2",
-            "com.huawei.calculator"
-    };
+    openAppByName("Calculator");
 
-    Intent intent = null;
-
-    for (String pkg : packages) {
-        intent = getPackageManager().getLaunchIntentForPackage(pkg);
-        if (intent != null) break;
-    }
-
-    if (intent != null) {
-        startActivity(intent);
-        reply = "Opening calculator";
-    } else {
-        reply = "I couldn't find a calculator app on this phone";
-    }
+    reply = "Opening Calculator";
                             }
                                 else if (lowerText.contains("open camera")) {
 
-    Intent intent =
-            new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-
+    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
     startActivity(intent);
 
-    reply = "Opening camera.";
+    reply = "Opening Camera";
                                 }
+                                    
                                     else if (lowerText.contains("open settings")) {
 
     Intent intent =
@@ -413,17 +395,15 @@ prefs.edit()
                                                     }
                                                         else if (lowerText.contains("open whatsapp")) {
 
-    try {
-
-        openAppByName("WhatsApp");
+    if (openAppByName("WhatsApp")) {
 
         reply = "Opening WhatsApp";
 
-    } catch (Exception e) {
+    } else {
 
         reply = "Couldn't find WhatsApp";
     }
-                                                        }
+                                                         }
                                                             
                                                             else if (lowerText.contains("open youtube")) {
 
@@ -983,7 +963,7 @@ else {
         });
     }
 
-    private void openAppByName(String appName) {
+    private boolean openAppByName(String appName) {
 
     PackageManager pm = getPackageManager();
 
@@ -1001,14 +981,18 @@ else {
                     pm.getLaunchIntentForPackage(app.packageName);
 
             if (intent != null) {
-                startActivity(intent);
-            }
 
-            return;
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+                return true;
+            }
         }
     }
-    }
 
+    return false;
+    }
+    
     @Override
     protected void onDestroy() {
 
