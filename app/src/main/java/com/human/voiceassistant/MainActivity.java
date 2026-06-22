@@ -327,19 +327,25 @@ prefs.edit()
                     // App opening
                             else if (lowerText.contains("open calculator")) {
 
-    Intent intent =
-            new Intent(Intent.ACTION_MAIN);
+    String[] packages = {
+            "com.sec.android.app.popupcalculator",
+            "com.google.android.calculator",
+            "com.android.calculator2",
+            "com.huawei.calculator"
+    };
 
-    intent.addCategory(Intent.CATEGORY_APP_CALCULATOR);
+    Intent intent = null;
 
-    try {
+    for (String pkg : packages) {
+        intent = getPackageManager().getLaunchIntentForPackage(pkg);
+        if (intent != null) break;
+    }
 
+    if (intent != null) {
         startActivity(intent);
-        reply = "Opening Calculator";
-
-    } catch (Exception e) {
-
-        reply = "I couldn't find the calculator app";
+        reply = "Opening calculator";
+    } else {
+        reply = "I couldn't find a calculator app on this phone";
     }
                             }
                                 else if (lowerText.contains("open camera")) {
@@ -407,25 +413,35 @@ prefs.edit()
 
     try {
 
-        Intent intent =
-                getPackageManager()
-                        .getLaunchIntentForPackage("com.whatsapp");
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setPackage("com.whatsapp");
 
-        if (intent != null) {
+        startActivity(intent);
 
-            startActivity(intent);
-            reply = "Opening WhatsApp";
-
-        } else {
-
-            reply = "Package com.whatsapp not found";
-        }
+        reply = "Opening WhatsApp";
 
     } catch (Exception e) {
 
         reply = "Couldn't open WhatsApp";
     }
-                                                        }
+                }
+                                                            else if (lowerText.contains("test whatsapp")) {
+
+    try {
+
+        PackageManager pm = getPackageManager();
+
+        pm.getPackageInfo("com.whatsapp", 0);
+
+        reply = "WhatsApp package exists";
+
+    } catch (Exception e) {
+
+        reply = "WhatsApp package not found";
+    }
+                                                            }
+                                                            
                                                             else if (lowerText.contains("open youtube")) {
 
     Intent intent = new Intent(
