@@ -3,6 +3,7 @@ package com.human.voiceassistant;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
 import android.content.SharedPreferences;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Random;
 import org.json.JSONObject;
@@ -106,7 +108,7 @@ try {
     e.printStackTrace();
 }
 
-userName = prefs.getString("userName", "friend");
+userName = prefs.getString("userName", "Abide");
 assistantName = prefs.getString("assistantName", "Baymax");
 personalityMode = prefs.getString("personalityMode", "casual");
 
@@ -413,34 +415,15 @@ prefs.edit()
 
     try {
 
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setPackage("com.whatsapp");
-
-        startActivity(intent);
+        openAppByName("WhatsApp");
 
         reply = "Opening WhatsApp";
 
     } catch (Exception e) {
 
-        reply = "Couldn't open WhatsApp";
+        reply = "Couldn't find WhatsApp";
     }
-                }
-                                                            else if (lowerText.contains("test whatsapp")) {
-
-    try {
-
-        PackageManager pm = getPackageManager();
-
-        pm.getPackageInfo("com.whatsapp", 0);
-
-        reply = "WhatsApp package exists";
-
-    } catch (Exception e) {
-
-        reply = "WhatsApp package not found";
-    }
-                                                            }
+                                                        }
                                                             
                                                             else if (lowerText.contains("open youtube")) {
 
@@ -998,6 +981,32 @@ else {
 
             speechRecognizer.startListening(intent);
         });
+    }
+
+    private void openAppByName(String appName) {
+
+    PackageManager pm = getPackageManager();
+
+    List<ApplicationInfo> apps =
+            pm.getInstalledApplications(PackageManager.GET_META_DATA);
+
+    for (ApplicationInfo app : apps) {
+
+        String label =
+                pm.getApplicationLabel(app).toString();
+
+        if (label.equalsIgnoreCase(appName)) {
+
+            Intent intent =
+                    pm.getLaunchIntentForPackage(app.packageName);
+
+            if (intent != null) {
+                startActivity(intent);
+            }
+
+            return;
+        }
+    }
     }
 
     @Override
