@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.SharedPreferences;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -472,7 +473,113 @@ prefs.edit()
         reply = "Play Store is not available.";
     }
                                                                             }
-                            
+
+                    // Settings and gestures
+                                                                                else if (lowerText.contains("open wifi")) {
+
+    Intent intent =
+            new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS);
+
+    startActivity(intent);
+
+    reply = "Opening WiFi settings";
+                                                                                }
+                                                                                    else if (lowerText.contains("open bluetooth")) {
+
+    Intent intent =
+            new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+
+    startActivity(intent);
+
+    reply = "Opening Bluetooth settings";
+        }
+                                                                                        else if (lowerText.contains("open airplane mode")) {
+
+    Intent intent =
+            new Intent(android.provider.Settings.ACTION_AIRPLANE_MODE_SETTINGS);
+
+    startActivity(intent);
+
+    reply = "Opening Airplane Mode settings";
+                                                                                        }
+                                                                                            else if (lowerText.contains("open location")) {
+
+    Intent intent =
+            new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+
+    startActivity(intent);
+
+    reply = "Opening Location settings";
+                                                                                            }
+                                                                                                else if (lowerText.contains("open display settings")) {
+
+    Intent intent =
+            new Intent(android.provider.Settings.ACTION_DISPLAY_SETTINGS);
+
+    startActivity(intent);
+
+    reply = "Opening Display settings";
+                                                                                                }
+                                                                                                else if (lowerText.contains("open sound settings")) {
+
+    Intent intent =
+            new Intent(android.provider.Settings.ACTION_SOUND_SETTINGS);
+
+    startActivity(intent);
+
+    reply = "Opening Sound settings";
+                                                                                                }
+                                                                                                    else if (lowerText.contains("volume up")) {
+
+    AudioManager audio =
+            (AudioManager)getSystemService(AUDIO_SERVICE);
+
+    audio.adjustVolume(
+            AudioManager.ADJUST_RAISE,
+            AudioManager.FLAG_SHOW_UI
+    );
+
+    reply = "Volume increased";
+        }
+                                                                                                        else if (lowerText.contains("volume down")) {
+
+    AudioManager audio =
+            (AudioManager)getSystemService(AUDIO_SERVICE);
+
+    audio.adjustVolume(
+            AudioManager.ADJUST_LOWER,
+            AudioManager.FLAG_SHOW_UI
+    );
+
+    reply = "Volume decreased";
+                                                                                                        }
+                                                                                                    else if (lowerText.contains("silent mode")) {
+
+    AudioManager audio =
+            (AudioManager)getSystemService(AUDIO_SERVICE);
+
+    audio.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
+    reply = "Silent mode enabled";
+                                                                                                    }
+                                                                                                else if (lowerText.contains("vibrate mode")) {
+
+    AudioManager audio =
+            (AudioManager)getSystemService(AUDIO_SERVICE);
+
+    audio.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+
+    reply = "Vibrate mode enabled";
+                                                                                                }
+                                                                                                    else if (lowerText.contains("normal volume")) {
+
+    AudioManager audio =
+            (AudioManager)getSystemService(AUDIO_SERVICE);
+
+    audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
+    reply = "Normal mode enabled";
+                                                                                                    }
                     // Time
                     else if (lowerText.contains("time")) {
 
