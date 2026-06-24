@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.SharedPreferences;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.camera2.CameraManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.provider.MediaStore;
