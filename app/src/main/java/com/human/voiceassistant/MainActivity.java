@@ -79,8 +79,8 @@ try {
         android.hardware.camera2.CameraCharacteristics characteristics =
                 cameraManager.getCameraCharacteristics(id);
 
-        Boolean hasFlash = characteristics.getFlashAvailable();
-
+        Boolean hasFlash = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+        
         if (Boolean.TRUE.equals(hasFlash)) {
             cameraId = id;
             break;
