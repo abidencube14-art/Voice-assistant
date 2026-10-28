@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraAccessException;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -41,6 +42,8 @@ import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
+    private CameraManager cameraManager;
+    private String cameraId;
     private TextToSpeech tts;
     private SpeechRecognizer speechRecognizer;
 
@@ -66,6 +69,27 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        cameraManager =
+        (CameraManager) getSystemService(CAMERA_SERVICE);
+
+try {
+    String[] cameraIds = cameraManager.getCameraIdList();
+
+    for (String id : cameraIds) {
+        android.hardware.camera2.CameraCharacteristics characteristics =
+                cameraManager.getCameraCharacteristics(id);
+
+        Boolean hasFlash = characteristics.getFlashAvailable();
+
+        if (Boolean.TRUE.equals(hasFlash)) {
+            cameraId = id;
+            break;
+        }
+    }
+
+} catch (CameraAccessException e) {
+    e.printStackTrace();
+}
 
         prefs = getSharedPreferences("BaymaxMemory", MODE_PRIVATE);
         String memoryJson = prefs.getString("memory", "{}");
@@ -581,6 +605,43 @@ prefs.edit()
 
     reply = "Normal mode enabled";
                                                                                                     }
+                                                                                                        
+                                                                                                        else if (
+        lowerText.contains("turn on flashlight")
+        || lowerText.contains("flashlight on")
+        || lowerText.contains("turn on torch")
+        || lowerText.equals("torch on")
+) {
+    try {
+        if (cameraId == null) {
+            reply = "I couldn't find a flashlight on this phone.";
+        } else {
+            cameraManager.setTorchMode(cameraId, true);
+            reply = "Flashlight turned on.";
+        }
+    } catch (Exception e) {
+        reply = "I couldn't turn on the flashlight.";
+    }
+                }
+                                                                                                            
+                                                                                                            else if (
+        lowerText.contains("turn off flashlight")
+        || lowerText.contains("flashlight off")
+        || lowerText.contains("turn off torch")
+        || lowerText.equals("torch off")
+) {
+    try {
+        if (cameraId == null) {
+            reply = "I couldn't find a flashlight on this phone.";
+        } else {
+            cameraManager.setTorchMode(cameraId, false);
+            reply = "Flashlight turned off.";
+        }
+    } catch (Exception e) {
+        reply = "I couldn't turn off the flashlight.";
+    }
+                                                                                                            }
+                                                                                                                
                     // Time
                     else if (lowerText.contains("time")) {
 
