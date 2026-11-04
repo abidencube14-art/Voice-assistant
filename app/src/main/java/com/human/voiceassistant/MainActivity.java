@@ -555,6 +555,61 @@ prefs.edit()
 
     reply = "Opening Sound settings";
                                                                                                 }
+                                                                                                    
+                                                                                                    // =====================================
+// BRIGHTNESS CONTROL
+// =====================================
+
+else if (
+    lowerText.contains("brightness up") ||
+    lowerText.contains("increase brightness") ||
+    lowerText.contains("increase screen brightness") ||
+    lowerText.contains("make screen brighter") ||
+    lowerText.contains("brighten the screen")
+) {
+
+    reply = handleBrightnessCommand(lowerText);
+
+}
+
+else if (
+    lowerText.contains("brightness down") ||
+    lowerText.contains("decrease brightness") ||
+    lowerText.contains("decrease screen brightness") ||
+    lowerText.contains("make screen dimmer") ||
+    lowerText.contains("dim the screen")
+) {
+
+    reply = handleBrightnessCommand(lowerText);
+
+}
+
+else if (
+    lowerText.contains("set brightness") ||
+    lowerText.contains("set screen brightness") ||
+    lowerText.contains("change brightness") ||
+    lowerText.contains("adjust brightness")
+) {
+
+    reply = handleBrightnessCommand(lowerText);
+
+}
+
+else if (
+    lowerText.contains("current brightness") ||
+    lowerText.contains("brightness level") ||
+    lowerText.contains("what's my current brightness") ||
+    lowerText.contains("what is my current brightness") ||
+    lowerText.contains("what is my brightness") ||
+    lowerText.contains("what's my brightness") ||
+    lowerText.contains("how bright is the screen") ||
+    lowerText.contains("how bright")
+) {
+
+    reply = handleBrightnessCommand(lowerText);
+
+    }
+                                                                                                    
                                                                                                     else if (lowerText.contains("volume up")) {
 
     AudioManager audio =
@@ -1179,4 +1234,225 @@ else {
             speechRecognizer.destroy();
         }
     }
+    
+    // =====================================
+// BAYMAX BRIGHTNESS CONTROL
+// =====================================
+
+private String setScreenBrightness(int percentage) {
+
+    if (!Settings.System.canWrite(this)) {
+
+        Intent intent = new Intent(
+            Settings.ACTION_MANAGE_WRITE_SETTINGS,
+            Uri.parse("package:" + getPackageName())
+        );
+
+        startActivity(intent);
+
+        return "Please allow Baymax to modify system settings, then repeat your command.";
+    }
+
+    percentage = Math.max(1, Math.min(100, percentage));
+
+    int brightness = (int) Math.round(
+        percentage * 255.0 / 100.0
+    );
+
+    try {
+
+        Settings.System.putInt(
+            getContentResolver(),
+            Settings.System.SCREEN_BRIGHTNESS,
+            brightness
+        );
+
+        return "Screen brightness set to " + percentage + " percent.";
+
+    } catch (Exception e) {
+
+        return "Sorry, I couldn't change the screen brightness.";
+    }
 }
+
+
+// Get current brightness percentage
+private int getCurrentBrightness() {
+
+    try {
+
+        int brightness = Settings.System.getInt(
+            getContentResolver(),
+            Settings.System.SCREEN_BRIGHTNESS
+        );
+
+        return Math.max(
+            1,
+            Math.min(100, (int) Math.round(brightness * 100.0 / 255.0))
+        );
+
+    } catch (Exception e) {
+
+        return 50;
+    }
+}
+
+
+// Extract a percentage from the voice command
+private int extractBrightnessPercentage(String command) {
+
+    String cleaned = command.replaceAll("[^a-z0-9 ]", " ");
+    String[] words = cleaned.trim().split("\\s+");
+
+    String[] numbers = {
+        "zero", "one", "two", "three", "four",
+        "five", "six", "seven", "eight", "nine",
+        "ten", "eleven", "twelve", "thirteen",
+        "fourteen", "fifteen", "sixteen",
+        "seventeen", "eighteen", "nineteen"
+    };
+
+    String[] tens = {
+        "twenty", "thirty", "forty", "fifty",
+        "sixty", "seventy", "eighty", "ninety"
+    };
+
+    for (int i = 0; i < words.length; i++) {
+
+        try {
+
+            int value = Integer.parseInt(words[i]);
+
+            if (value >= 1 && value <= 100) {
+                return value;
+            }
+
+        } catch (NumberFormatException ignored) {
+        }
+
+        for (int j = 1; j < numbers.length; j++) {
+
+            if (words[i].equals(numbers[j])) {
+                return j;
+            }
+        }
+
+        for (int j = 0; j < tens.length; j++) {
+
+            if (words[i].equals(tens[j])) {
+
+                int value = (j + 2) * 10;
+
+                if (i + 1 < words.length) {
+
+                    for (int k = 1; k < 10; k++) {
+
+                        if (words[i + 1].equals(numbers[k])) {
+                            value += k;
+                            break;
+                        }
+                    }
+                }
+
+                return value;
+            }
+        }
+
+        if (words[i].equals("hundred")) {
+            return 100;
+        }
+    }
+
+    return -1;
+}
+
+
+// Process brightness voice commands
+private String handleBrightnessCommand(String command) {
+
+    int current = getCurrentBrightness();
+
+    int amount = extractBrightnessPercentage(command);
+
+    boolean increase =
+        command.contains("increase") ||
+        command.contains("brightness up") ||
+        command.contains("brighter") ||
+        command.contains("brighten") ||
+        command.contains("raise") ||
+        command.contains("turn up");
+
+    boolean decrease =
+        command.contains("decrease") ||
+        command.contains("brightness down") ||
+        command.contains("dimmer") ||
+        command.contains("dim the screen") ||
+        command.contains("lower") ||
+        command.contains("turn down") ||
+        command.contains("reduce");
+
+    boolean hasTo = command.contains(" to ");
+    boolean hasBy = command.contains(" by ");
+
+    // Current brightness inquiry
+    if (
+        command.contains("current brightness") ||
+        command.contains("brightness level") ||
+        command.contains("how bright") ||
+        command.contains("what is my brightness")
+    ) {
+
+        return "Your current screen brightness is approximately "
+            + current + " percent.";
+    }
+
+    // Increase or decrease brightness
+    if (increase || decrease) {
+
+        if (hasTo) {
+
+            if (amount == -1) {
+                return "Please tell me the percentage you want.";
+            }
+
+            return setScreenBrightness(amount);
+        }
+
+        if (hasBy) {
+
+            if (amount == -1) {
+                return "Please tell me how much to adjust the brightness.";
+            }
+
+            int target = increase
+                ? current + amount
+                : current - amount;
+
+            return setScreenBrightness(target);
+        }
+
+        int target = increase
+            ? current + 10
+            : current - 10;
+
+        return setScreenBrightness(target);
+    }
+
+    // Set a specific brightness percentage
+    if (
+        command.contains("set brightness") ||
+        command.contains("set screen brightness") ||
+        command.contains("change brightness") ||
+        command.contains("adjust brightness")
+    ) {
+
+        if (amount == -1) {
+            return "What brightness percentage would you like?";
+        }
+
+        return setScreenBrightness(amount);
+    }
+
+    return "I couldn't understand the brightness instruction.";
+    }
+    }
