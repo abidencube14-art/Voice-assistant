@@ -1190,7 +1190,7 @@ else {
 
             speechRecognizer.startListening(intent);
         });
-            initVoskModel();
+           // initVoskModel();
     }
 
     // ==================================
