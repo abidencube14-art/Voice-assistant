@@ -37,9 +37,11 @@ import java.util.Locale;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Iterator;
 import org.json.JSONObject;
 import org.json.JSONException;
-import java.util.Iterator;
+import org.vosk.Model;
+import org.vosk.android.StorageService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private String cameraId;
     private TextToSpeech tts;
     private SpeechRecognizer speechRecognizer;
+    private Model voskModel;
+    private boolean voskReady = false;
 
     private TextView textView;
     private Button listenButton;
@@ -1186,7 +1190,61 @@ else {
 
             speechRecognizer.startListening(intent);
         });
+            initVoskModel();
     }
+
+    // ==================================
+// BAYMAX OFFLINE VOICE MODEL
+// ==================================
+
+private void initVoskModel() {
+
+    Toast.makeText(
+        this,
+        "Loading offline voice model...",
+        Toast.LENGTH_SHORT
+    ).show();
+
+    StorageService.unpack(
+        this,
+        "model",
+        "vosk-model",
+
+        (model) -> {
+
+            voskModel = model;
+            voskReady = true;
+
+            runOnUiThread(() -> {
+
+                Toast.makeText(
+                    MainActivity.this,
+                    "Offline voice model ready!",
+                    Toast.LENGTH_LONG
+                ).show();
+
+            });
+
+        },
+
+        (exception) -> {
+
+            voskReady = false;
+
+            runOnUiThread(() -> {
+
+                Toast.makeText(
+                    MainActivity.this,
+                    "Vosk loading failed: "
+                        + exception.getMessage(),
+                    Toast.LENGTH_LONG
+                ).show();
+
+            });
+
+        }
+    );
+}
 
     private boolean openAppByName(String appName) {
 
