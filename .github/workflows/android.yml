@@ -33,6 +33,7 @@ jobs:
             -o /tmp/vosk-model.zip
           unzip -q /tmp/vosk-model.zip -d /tmp/vosk-model
           cp -a /tmp/vosk-model/vosk-model-small-en-us-0.15/. app/src/main/assets/model/
+                    cat /proc/sys/kernel/random/uuid > app/src/main/assets/model/uuid
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
